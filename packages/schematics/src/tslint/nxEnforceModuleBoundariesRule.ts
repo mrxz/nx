@@ -8,8 +8,8 @@ export class Rule extends Lint.Rules.AbstractRule {
   constructor(options: IOptions, private path?: string, private npmScope?: string, private appNames?: string[]) {
     super(options);
     if (!path) {
-      const cliConfig = this.readCliConfig();
-      this.path = process.cwd();
+      this.path = require('app-root-path').path;
+      const cliConfig = this.readCliConfig(this.path);
       this.npmScope = cliConfig.project.npmScope;
       this.appNames = cliConfig.apps.map(a => a.name);
     }
@@ -21,8 +21,8 @@ export class Rule extends Lint.Rules.AbstractRule {
     );
   }
 
-  private readCliConfig(): any {
-    return JSON.parse(readFileSync(`.angular-cli.json`, 'UTF-8'));
+  private readCliConfig(projectPath: string): any {
+    return JSON.parse(readFileSync(`${projectPath}/.angular-cli.json`, 'UTF-8'));
   }
 }
 
